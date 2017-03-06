@@ -7,15 +7,19 @@ var express = require ('express'),
 var server = require ('http').createServer (app);
 var io = require ('socket.io')(server);
 
- app.use (express.static (__dirname+ '/views'));
+ //app.use (express.static (__dirname+ '/views'));
     app.use (parser.json());
     app.use (cookieParser());
     app.use (expressSession ({secret: 'winteriscoming', resave: false, saveUninitialized: true, cookie: {maxAge: 60000}}));
 
 
 app.get ('/', (req, res) => {
-    res.sendFile ('index.html');
+    res.sendFile (__dirname+ '/views/index.html');
 });
+
+app.get ('/login', (req, res) => {
+    res.sendFile (__dirname + '/views/login.html');
+})
 
 io.on ('connection', (socket) => {
     socket.emit ('server-connected', {connected: true});
