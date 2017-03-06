@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type='text/css' rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' />
+    <link href="https://fonts.googleapis.com/css?family=Catamaran" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js'></script>
+    <script type='text/javascript' src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+    <!-- AngularJS JS 1.5.7 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    <script>
+        $(document).ready(() => {
+            resize();
+            $('body').animate({
+                opacity: 1
+            }, 1000);
+        });
+
+        $(window).resize (resize);
+
+        function resize () {
+
+            $('.chat-container').css ('height', $(window).innerHeight()-150+'px');
+            console.log ($('.chat-container').css('height'));
+        }
+    </script>
+    <style type='text/css'>
+        * {
+            font-family: Catamaran;
+        }
+        
+        body {
+            opacity: 0;
+        }
+        
+        .chat-container {
+            position: relative;
+            border: solid 1px #f0f0f0;
+            border-radius: 3px;
+            background: #fafafa;
+        }
+        
+        .chat-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: #f0f0f0;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+        .chat-footer {
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            background: #fff6e4;
+            border: solid 1px #f0f0f0;
+            border-radius: 3px;
+        }
+        textarea {
+            width: 90%;
+            padding: 10px;
+            resize: none;
+            background: none;
+            border: none;
+            border-right: solid 1px silver;
+            margin-top: 3px;
+        }
+        .chat-footer span {
+            position: absolute;
+            top: 30%;
+            font-size: 30px;
+            right: 0;
+            margin-right: 50px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            <a class="navbar-brand" href="#"><!--<img src='img/logo.png' width=30 height=30/>&nbsp;-->Chat</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">gauravs <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Sign off</a></li>
+                    <li><a href="#">Delete account</a></li>
+                    <li><a href="#">Vanish my data</a></li>
+                    <li><a href="#">Some random option</a></li>
+                </ul>
+            </li>
+        </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </nav>
+    <section class='container chat-container'>
+        <section class='chat-header'>
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">30 Active members <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">gauravs</a></li>
+                        <li><a href="#">kamald</a></li>
+                        <li><a href="#">manishs</a></li>
+                        <li><a href="#">jenny</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section class='chat-footer'>
+            <textarea placeholder='type in your message'></textarea>&nbsp;
+            <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+            
+        </section>
+    </section>
+</body>
+
+</html>

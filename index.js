@@ -7,10 +7,10 @@ var express = require ('express'),
 var server = require ('http').createServer (app);
 var io = require ('socket.io')(server);
 
- //app.use (express.static (__dirname+ '/views'));
-    app.use (parser.json());
-    app.use (cookieParser());
-    app.use (expressSession ({secret: 'winteriscoming', resave: false, saveUninitialized: true, cookie: {maxAge: 60000}}));
+app.use (express.static (__dirname+ '/artifacts'));
+app.use (parser.json());
+app.use (cookieParser());
+app.use (expressSession ({secret: 'winteriscoming', resave: false, saveUninitialized: true, cookie: {maxAge: 60000}}));
 
 
 app.get ('/', (req, res) => {
@@ -20,6 +20,8 @@ app.get ('/', (req, res) => {
 app.get ('/login', (req, res) => {
     res.sendFile (__dirname + '/views/login.html');
 })
+
+app.get ('/chat', (req, res) => res.sendFile (__dirname+ '/views/chat.html'));
 
 io.on ('connection', (socket) => {
     socket.emit ('server-connected', {connected: true});

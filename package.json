@@ -21,6 +21,7 @@
     "gulp-nodemon": "^2.2.1",
     "gulp-notify": "^3.0.0",
     "mongoose": "^4.8.6",
+    "node-jsx": "^0.13.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "socket.io": "^1.7.3",
