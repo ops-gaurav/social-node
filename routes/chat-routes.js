@@ -38,6 +38,8 @@ router.post ('/message', (req, res) => {
                 res.send ({status: 'success', message: 'message pushed'});
                 mongoose.disconnect();
             });
-        }
-    }
+        } else
+            res.send ({status:'error', message: 'cannot send empty message'});
+    } else
+        res.send ({status: 'error', message: 'login first'});
 });
