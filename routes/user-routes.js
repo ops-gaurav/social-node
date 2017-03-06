@@ -20,6 +20,7 @@ router.post ('/auth', (req, res) => {
                 if (doc.password == data.password ) {
                     if (req.ip == doc.machine) {
                         req.session.user = {
+                            id: doc._id,
                             username: doc.username,
                             ip: doc.machine
                         };
