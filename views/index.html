@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link type='text/css' rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' />
+        
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js'></script>
+        <script type='text/javascript' src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+        <!-- AngularJS JS 1.5.7 -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+
+        <script>
+            var socket = io.connect ('http://localhost:3000');
+            socket.on ('server-connected', (data) => {
+                console.log ('server connected: '+ data.connected);
+            });
+
+            socket.on ('new-message', (data) => {
+                console.log ('new message '+ data.message);
+            });
+        </script>
+    </head>
+    <body>
+        <div class="page-header">
+          <h1>Hello<small>world</small></h1>
+        </div>
+    </body>
+</html>

@@ -15,7 +15,10 @@
     "express": "^4.15.1",
     "express-session": "^1.15.1",
     "gulp": "^3.9.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-nodemon": "^2.2.1",
+    "gulp-notify": "^3.0.0",
     "mongoose": "^4.8.6",
-    "morgan": "^1.8.1"
+    "socket.io": "^1.7.3"
   }
 }
