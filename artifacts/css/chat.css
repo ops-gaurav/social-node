@@ -1,0 +1,94 @@
+* {
+    font-family: Catamaran;
+}
+
+body {
+    opacity: 0;
+    overflow-x: hidden;
+}
+
+.chat-container {
+    position: relative;
+    border: solid 1px #f0f0f0;
+    border-radius: 3px;
+    background: #fafafa;
+}
+
+.chat-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background: #ace0ba;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+.chat-footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    background: #fff6e4;
+    border: solid 1px #f0f0f0;
+    border-radius: 3px;
+}
+textarea {
+    width: 90%;
+    padding: 10px;
+    resize: none;
+    background: none;
+    border: none;
+    border-right: solid 1px silver;
+    margin-top: 3px;
+}
+.chat-footer span {
+    position: absolute;
+    top: 30%;
+    font-size: 30px;
+    right: 0;
+    margin-right: 50px;
+    cursor: pointer;
+}
+.chats {
+    position: relative;
+    margin-top: 100px;
+}
+.ind-chat {
+    position: relative;
+    margin-top: 10px;
+}
+.ind-chat img {
+    position: absolute;
+}
+.chat-content {
+    background: #a7e3f9;
+    color: #383838;
+    padding: 10px;
+    margin-left: 30px;
+    border-radius: 5px;
+    max-width: 30%;
+}
+.self {
+    position: absolute;
+    right: 0;
+}
+.self img {
+    position: absolute;
+    right:0;
+    margin-right: 10px;
+}
+
+.chat-content-self {
+    position: relative;
+    right: 0;
+    padding: 10px;
+    border-radius: 10px;
+    background: wheat;
+    color: #383838;
+    margin-right: 40px;
+    max-width: 100%;
+}
+.username {
+    color: dodgerblue;
+}

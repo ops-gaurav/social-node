@@ -24,6 +24,10 @@ module.exports = (socket) => {
         } else res.send ({status: 'error', message: 'Login first'});
     });
 
+    router.get ('/active', (req, res) => {
+        
+    });
+
     router.get ('/get/:id', (req, res) => {
         if (req.session.user) {
             mongoose.Promise = es6Promise;

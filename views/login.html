@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" ng-app='loginModule'>
 <head>
-    <title></title>
+    <title>Login</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type='text/css' rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' />
@@ -13,21 +12,78 @@
     <script type='text/javascript' src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
     <!-- AngularJS JS 1.5.7 -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    
     <script>
-        $(document).ready(() => {
-            resize();
-        });
-
-        
     </script>
+    
     <style type='text/css'>
         * {
             font-family: Catamaran;
         }
+        .error-message {
+            color: brown;
+        }
     </style>
 </head>
 
-<body>
+<body ng-controller="LoginController">
+    <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            <a class="navbar-brand" href="#"><img src='img/logo.png' width=30 height=30/></a>
+        </div>
+        <!-- /.navbar-collapse -->
+    </nav>
+
+    <section class='container-fluid'>
+        <section class='row'>
+            <section class='col-md-4'></section>
+            <section class='col-md-4'>
+                <h4 class='text-center'>{{sample}}</h4>
+
+                <input type='text' ng-model='username' class='form-control' placeholder="username" /><br/>
+                <input type='password' ng-model='password' ng-model='password' class='form-control' placeholder="password" /> <br/>
+                <p class='text-center'><button ng-click='loginAuth()' class='btn btn-sm btn-primary'>Login</button></p>
+                <p class='text-center error-message'></p>
+            </section>
+            <section class='col-md-4'></section>
+        </section>
+    </section>
+    <script>
+        var module = angular.module ('loginModule', []);
+            module.controller ('LoginController', ['$http', '$scope', ($http, $scope) => {
+                $scope.sample = "Login";
+                $scope.username = '';
+                $scope.password = '';
+
+                var socket = io.connect ('http://localhost:3000');
+                socket.on ('server-connected', (data) => {
+                    console.log ('server connected');
+                });
+
+                $scope.loginAuth = () => {
+                    $http({
+                        method: 'POST',
+                        url: 'http://localhost:3000/user/auth',
+                        data: {username: $scope.username, password: $scope.password}
+                    }).then (function successCallback (data) {
+                        if (data.data.status == 'success') {
+                            alert ('authenticated');
+                            window.location = 'http://localhost:3000/chat';
+                        } else
+                            $('.error-message').html (data.data.message);
+                    }, function errorCallback (data) {
+                        $('.error-message').html ('Username or password error');
+                    });
+                }
+            }]);
+    </script>
 </body>
 
 </html>

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" ng-app="chatModule">
 <head>
     <title></title>
     <meta charset="UTF-8">
@@ -24,83 +23,30 @@
         $(window).resize (resize);
 
         function resize () {
-
-            $('.chat-container').css ('height', $(window).innerHeight()-150+'px');
+            $('.chat-container').css ('height', $(window).innerHeight()-200+'px');
             console.log ($('.chat-container').css('height'));
         }
     </script>
-    <style type='text/css'>
-        * {
-            font-family: Catamaran;
-        }
-        
-        body {
-            opacity: 0;
-        }
-        
-        .chat-container {
-            position: relative;
-            border: solid 1px #f0f0f0;
-            border-radius: 3px;
-            background: #fafafa;
-        }
-        
-        .chat-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 10px;
-            background: #f0f0f0;
-            border-top-left-radius: 3px;
-            border-top-right-radius: 3px;
-        }
-        .chat-footer {
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-            left: 0;
-            background: #fff6e4;
-            border: solid 1px #f0f0f0;
-            border-radius: 3px;
-        }
-        textarea {
-            width: 90%;
-            padding: 10px;
-            resize: none;
-            background: none;
-            border: none;
-            border-right: solid 1px silver;
-            margin-top: 3px;
-        }
-        .chat-footer span {
-            position: absolute;
-            top: 30%;
-            font-size: 30px;
-            right: 0;
-            margin-right: 50px;
-            cursor: pointer;
-        }
-    </style>
+    <link href='css/chat.css' rel='stylesheet' type='text/css'/>
 </head>
 
-<body>
+<body ng-controller='ChatController'>
     <nav class="navbar navbar-default" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            <a class="navbar-brand" href="#"><!--<img src='img/logo.png' width=30 height=30/>&nbsp;-->Chat</a>
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img src='img/logo.png' width=30 height=30/></a>
         </div>
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">gauravs <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">logged in as {{session.username}} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Sign off</a></li>
+                    <li><a href="http://localhost:3000/user/logout">Sign off</a></li>
                     <li><a href="#">Delete account</a></li>
                     <li><a href="#">Vanish my data</a></li>
                     <li><a href="#">Some random option</a></li>
@@ -114,22 +60,83 @@
         <section class='chat-header'>
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">30 Active members <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b ng-bind='users.length'></b> Active members <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">gauravs</a></li>
-                        <li><a href="#">kamald</a></li>
-                        <li><a href="#">manishs</a></li>
-                        <li><a href="#">jenny</a></li>
+                        <li ng-repeat='user in users'><a href="#">{{user}}</a></li>
                     </ul>
                 </li>
             </ul>
         </section>
+        
+        <section class='chats'>
+            <!--<section class='ind-chat'>
+                <img src='img/user.png' width=20 height=20/>
+                <section class='chat-content'>
+                    <a class='username' href>xyz</a><br/>
+                    This is the message content that contains a super large message
+                </section>
+            </section>
+            <section class='ind-chat'>
+                <img src='img/user.png' width=20 height=20/>
+                <section class='chat-content'>
+                    <a class='username' href>xyz</a><br/>
+                    This is the message content that contains a super large message
+                </section>
+            </section>
+            <section class='self'>
+                <img src='img/user.png' width=20 height=20/>
+                <section class='chat-content-self'>
+                    <a class='username' href>gauravs</a><br/>
+                    <p>This is some random message by me</p>
+                </section>
+            </section> -->
+        </section>
+
         <section class='chat-footer'>
             <textarea placeholder='type in your message'></textarea>&nbsp;
             <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-            
         </section>
     </section>
+
+    <script type='text/javascript'>
+        var module = angular.module ('chatModule', []);
+        module.controller ('ChatController', ['$http', '$scope', ($http, $scope) => {
+            $scope.test =  "Welcome user";
+            $scope.session = {};
+
+            $scope.users = [];
+
+            var socket = io.connect ('http://localhost:3000');
+            socket.on ('server-connected', (data) => {
+                console.log ('server connected');
+
+                initSession ();
+            });
+
+            socket.on ('new-user', (data) => {
+                console.log (JSON.stringify(data));
+                $scope.users.push (data.user);
+            });
+
+            function initSession () {
+                $http({
+                    method: 'GET',
+                    url: 'http://localhost:3000/user/getSession'
+                }).then (function successCallback (data) {
+                    if (data.data.status == 'success') {
+                        $scope.session = data.data.data;
+                        socket.emit ('user-joined', $scope.session);
+                    } else {
+                        console.log (data.data.message);
+                        window.location = 'http://localhost:3000/login';
+                    }
+                }, function errorCallback (data){ 
+                    console.log (data);
+                    window.location = 'http://localhost:3000/login';
+                });    
+            }
+        }]);
+    </script>
 </body>
 
 </html>

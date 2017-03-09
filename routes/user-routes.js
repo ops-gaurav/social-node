@@ -9,7 +9,6 @@ var User = mongoose.model ('users', UserSchema);
 
 router.post ('/auth', (req, res) => {
     var data = req.body;
-
     if (data.username && data.password) {
         mongoose.Promise = es6Promise;
         mongoose.connect (config.host, config.db);
@@ -29,10 +28,8 @@ router.post ('/auth', (req, res) => {
                         res.send ({status: 'error', message: 'require to login from your own machine'});
                 } else
                     res.send ({status: 'error', message: 'password error'});
-
             } else
                 res.send ({status: 'error', message: 'username error'});
-
             mongoose.disconnect();
         })
     } else
@@ -83,11 +80,18 @@ router.post ('/signup', (req, res) => {
         res.send ({status: 'error', message: 'username and password required'});
 });
 
+router.get ('/getSession', (req, res) => {
+    if (req.session.user)
+        res.send({status: 'success', data: req.session.user});
+    else 
+        res.send ({status: 'error', message: 'relogin'});
+});
+
 // clear the session
 router.get ('/logout', (req, res) => {
-    if (req.session.user)
+    if (req.session.user) 
         req.session.user = undefined;
-    res.send ({status: 'success'});
+    res.redirect ('/login');
 });
 
 module.exports = router;

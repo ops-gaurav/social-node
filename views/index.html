@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app='accountModule'>
     <head>
         <title></title>
         <meta charset="UTF-8">
@@ -22,11 +22,17 @@
             socket.on ('new-message', (data) => {
                 console.log ('new message '+ data.message);
             });
+
+            var module = angular.module ('accountModule', []);
+            module.controller ('AccountController', ['$http', '$scope', ($scope, $http) => {
+                
+            }]);
+
         </script>
     </head>
     <body>
         <section class='root'>
-
+            
         </section>
     </body>
 </html>
