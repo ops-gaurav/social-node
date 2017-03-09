@@ -25,6 +25,8 @@ app.get ('/chat', (req, res) => {
         res.redirect ('/login');
 });
 
+app.get ('/signup', (req, res) => res.sendFile (__dirname +'/views/signup.html'));
+
 io.on ('connection', (socket) => {
     socket.emit ('server-connected', {connected: true});
     console.log ('connected');
