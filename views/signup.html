@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='signupModule'>
+<head>
+    <title>Signup</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type='text/css' rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' />
+    <link href="https://fonts.googleapis.com/css?family=Catamaran" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js'></script>
+    <script type='text/javascript' src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+    <!-- AngularJS JS 1.5.7 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    
+    <script>
+    </script>
+    
+    <style type='text/css'>
+        * {
+            font-family: Catamaran;
+        }
+        .error-message {
+            color: brown;
+        }
+    </style>
+</head>
+
+<body ng-controller="SignupController">
+    <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            <a class="navbar-brand" href="#"><img src='img/logo.png' width=30 height=30/></a>
+        </div>
+        <!-- /.navbar-collapse -->
+    </nav>
+
+    <section class='container-fluid'>
+        <section class='row'>
+            <section class='col-md-4'></section>
+            <section class='col-md-4'>
+                <h4 class='text-center'>{{header}}</h4>
+
+                <input type='text' ng-model='username' class='form-control' placeholder="username" /><br/>
+                <input type='password' required="true" ng-model='password' class='form-control' placeholder="password" /> <br/>
+                <p class='text-center'><button ng-click='signupUser()' class='btn btn-sm btn-primary'>Sign Up</button></p>
+                <p class='text-center error-message'></p>
+            </section>
+            <section class='col-md-4'></section>
+        </section>
+    </section>
+    <script>
+        var module = angular.module ('signupModule', []);
+            module.controller ('SignupController', ['$http', '$scope', ($http, $scope) => {
+                $scope.header = "Sign Up";
+                $scope.username = "";
+                $scope.password = "";
+
+                $scope.signupUser = () => {
+                    if ($scope.username.trim() == '' || $scope.password.trim() == '')
+                        $('.error-message').html ('required fields');
+                    else {
+                        $('.error-message').html ('');
+                        alert ($scope.username + '\t'+ $scope.password);
+
+                        $http ({
+                            method: 'POST',
+                            url: 'http://localhost:3000/user/signup',
+                            data: {username: $scope.username, password: $scope.password}
+                        }). then (function successCallback (data) {
+                            
+                        }, function errorCallback (data) {
+                            
+                        });
+                    }
+                }
+            }]);
+    </script>
+</body>
+
+</html>
