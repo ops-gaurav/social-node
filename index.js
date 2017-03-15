@@ -14,8 +14,6 @@ app.use (expressSession ({secret: 'winteriscoming', resave: false, saveUninitial
 
 
 app.get ('/', (req, res) => res.sendFile (__dirname+ '/views/index.html'));
-
-
 app.get ('/login', (req, res) => res.sendFile (__dirname + '/views/login.html'))
 
 app.get ('/chat', (req, res) => {
@@ -47,4 +45,4 @@ io.on ('connection', (socket) => {
     app.use ('/chat', ChatRouter);
 });
 
-server.listen (3000, () => console.log ('server running on localhost:3000'));
+server.listen (3000);
