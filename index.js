@@ -12,7 +12,6 @@ app.use (parser.json());
 app.use (cookieParser());
 app.use (expressSession ({secret: 'winteriscoming', resave: false, saveUninitialized: true, cookie: {maxAge: 60000}}));
 
-
 app.get ('/', (req, res) => res.sendFile (__dirname+ '/views/index.html'));
 app.get ('/login', (req, res) => res.sendFile (__dirname + '/views/login.html'))
 

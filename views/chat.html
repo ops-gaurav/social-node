@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="chatModule">
 <head>
-    <title></title>
+    <title>Chats</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type='text/css' rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' />
@@ -69,28 +69,94 @@
         </section>
         
         <section class='chats'>
-            <section class='ind-chat'>
-                <img src='img/user.png' width=20 height=20/>
-                <section class='chat-content'>
-                    <a class='username' href>xyz</a><br/>
-                    This is the message content that contains a super large message
+            <p class='no-chat-error text-center'></p>
+
+            <section ng-repeat='chat in chats' ng-class='chat.cssContainer'>
+                <section ng-class='chat.cssMain'>
+                    <img src='img/user.png' width=20 height=20/>
+                    <section ng-class='chat.cssContent'>
+                        <a class='username' href>xyz</a><br/>
+                        This is the message content that contains a super large message
+                    </section>
                 </section>
             </section>
-            <section class='ind-chat'>
-                <img src='img/user.png' width=20 height=20/>
-                <section class='chat-content'>
-                    <a class='username' href>xyz</a><br/>
-                    This is the message content that contains a super large message
+            <!--<section class='ind-chat-container'>
+                <section class='ind-chat'>
+                    <img src='img/user.png' width=20 height=20/>
+                    <section class='chat-content'>
+                        <a class='username' href>xyz</a><br/>
+                        This is the message content that contains a super large message
+                    </section>
                 </section>
             </section>
-            <section class='self'>
-                <img src='img/user.png' width=20 height=20/>
-                <section class='chat-content-self'>
-                    <a class='username' href>gauravs</a><br/>
-                    <p>This is some random message by me</p>
+            <section class='self-container'>
+                <section class='self'>
+                    <img src='img/user.png' width=20 height=20/>
+                    <section class='chat-content-self'>
+                        <a class='username' href>gauravs</a><br/>
+                        <p>This is some random message by me</p>
+                    </section>
+                </section> 
+            </section>
+            <section class='self-container'>
+                <section class='self'>
+                    <img src='img/user.png' width=20 height=20/>
+                    <section class='chat-content-self'>
+                        <a class='username' href>gauravs</a><br/>
+                        <p>This is some random mesdfdfdfsage by me</p>
+                    </section>
+                </section> 
+            </section>
+            <section class='ind-chat-container'>
+                <section class='ind-chat'>
+                    <img src='img/user.png' width=20 height=20/>
+                    <section class='chat-content'>
+                        <a class='username' href>xyz</a><br/>
+                        This is the message content that contains a super large message
+                    </section>
                 </section>
-            </section> 
+            </section>
+            <section class='ind-chat-container'>
+                <section class='ind-chat'>
+                    <img src='img/user.png' width=20 height=20/>
+                    <section class='chat-content'>
+                        <a class='username' href>xyz</a><br/>
+                        This is the message content that contains a super large message
+                    </section>
+                </section>
+            </section>
+            <section class='ind-chat-container'>
+                <section class='ind-chat'>
+                    <img src='img/user.png' width=20 height=20/>
+                    <section class='chat-content'>
+                        <a class='username' href>xyz</a><br/>
+                        This is the message content that contains a super large message
+                    </section>
+                </section>
+            </section>
+            <section class='self-container'>
+                <section class='self-container'>
+                    <section class='self'>
+                        <img src='img/user.png' width=20 height=20/>
+                        <section class='chat-content-self'>
+                            <a class='username' href>gauravs</a><br/>
+                            <p>This is some random mesdfdfdfsage by me</p>
+                        </section>
+                    </section> 
+                </section>
+            </section>
+            <section class='self-container'>
+                <section class='self'>
+                    <img src='img/user.png' width=20 height=20/>
+                    <section class='chat-content-self'>
+                        <a class='username' href>gauravs</a><br/>
+                        <p>This is some random mesdfdfdfsage by me</p>
+                    </section>
+                </section> 
+            </section> -->
         </section>
+
+        <br/><br/><br/><br/><br/>
 
         <section class='chat-footer'>
             <textarea placeholder='type in your message'></textarea>&nbsp;
@@ -111,6 +177,7 @@
                 console.log ('server connected');
 
                 initSession ();
+                getChatMessages();
             });
 
             socket.on ('new-user', (data) => {
@@ -119,6 +186,39 @@
 
                 console.log ($scope.users);
             });
+
+            function getChatMessages () {
+                $http({
+                    method: 'GET',
+                    url: 'http://localhost:3000/chat/populate'
+                }).then (function successCallback (data) {
+                    var response = data.data;
+                    console.log (response);
+                    if (response.status == 'success') {
+                        $('.no-chat-error').html ('');
+
+                        response.data.forEach ((item) => {
+                            if (item._user.username == $scope.session.username) {
+                                response.data.cssContainer = 'self-container';
+                                response.data.cssMain = 'self';
+                                response.data.cssContent = 'chat-content-self';
+                            } else {
+                                response.data.cssContainer = 'ind-chat-container';
+                                response.data.cssMain = 'ind-chat';
+                                response.data.cssContent = 'chat-content';
+                            }
+                        });
+
+                        $scope.chats = response.data;
+
+                        // set scope chats to resppnse.data
+                    } else {
+                        $('.no-chat-error').html ('No chats found');
+                    }
+                }, function errorCallback (data) {
+                    $('.no-chat-error').html ('Error with loading chats');
+                });
+            }
 
             function initSession () {
                 $http({
