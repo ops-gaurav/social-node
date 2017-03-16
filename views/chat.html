@@ -61,7 +61,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Active members <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li ng-repeat='user in users'><a href="#">{{user}}</a></li>
+                        
                     </ul>
                 </li>
             </ul>
@@ -112,20 +112,30 @@
             });
 
             socket.on ('new-message', (data) => {
-                console.log ('new message');
                 $http({
                     method: 'GET',
                     url: '/chat/populate_single/'+ data._id
-                }).then (function successCallback (data) {
+                }). then (function successCallback (data) {
                     var response = data.data;
                     if (response.status == 'success') {
+                        if (response.data._user.username == $scope.session.username) {
+                            response.data.cssContainer = 'self-container';
+                            response.data.cssMain = 'self';
+                            response.data.cssContent = 'chat-content-self';
+                        } else {
+                            response.data.cssContainer = 'ind-chat-container';
+                            response.data.cssMain = 'ind-chat';
+                            response.data.cssContent = 'chat-content';
+                        }
                         $scope.chats.push (response.data);
                     } else {
-                        console.log ('error '+ response.message);
+                        console.log ('ERROR '+ response.message);
                     }
                 }, function errorCallback (data) {
-                    console.log ('error '+ JSON.stringify (data));
+                    console.log ('ERROR: '+ data.data);
                 });;
+                
+                $('.chats').scrollTop ($('.chats').scrollHeight);
             });
 
             // fetch the messages on load
@@ -181,6 +191,7 @@
             }
 
             $scope.sendMessage = () => {
+                //$scope.chats.push ({_user: {username: "gaurav"}, message: "something"});
                 var message = $('#input-message').val();
                 $http({
                     method: 'POST',
@@ -189,7 +200,22 @@
                 }). then (function successCallback (data) {
                     var response = data.data;
                     if (response.status == 'success') {
-                        console.log ('success');
+                        console.log (response);
+                        socket.emit ('new-chat', response.message);
+                        // fetch the populated data
+                        // $http({
+                        //     method: 'GET',
+                        //     url: '/chat/populate_single/'+ response.message._id
+                        // }).then (function successCallback (data) {
+                        //     var response = data.data;
+                        //     if (response.status == 'success') {
+                        //         socket.emit ('new-chat', response.data);
+                        //     } else {
+                        //         console.log ('error '+ response.message);
+                        //     }
+                        // }, function errorCallback (data) {
+                        //     console.log ('error '+ JSON.stringify (data));
+                        // });
                     } else {
                         console.log ('error sending message');
                     }

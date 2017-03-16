@@ -17,15 +17,15 @@ router.post ('/auth', (req, res) => {
             if (err) res.send ({status: 'error', message: err});
             else if (doc) {
                 if (doc.password == data.password ) {
-                    if (req.ip == doc.machine) {
+                    //if (req.ip == doc.machine) {
                         req.session.user = {
                             id: doc._id,
                             username: doc.username,
                             ip: doc.machine
                         };
                         res.send ({status: 'success', message: 'authenticated'});
-                    } else
-                        res.send ({status: 'error', message: 'require to login from your own machine'});
+                    //} else
+                        //res.send ({status: 'error', message: 'require to login from your own machine'});
                 } else
                     res.send ({status: 'error', message: 'password error'});
             } else

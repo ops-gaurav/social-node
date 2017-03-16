@@ -58,7 +58,7 @@ module.exports = (socket) => {
 
                 message.save().then ((data) => {
                     socket.emit ('new-message', data);
-                    res.send ({status: 'success', message: 'message pushed'});
+                    res.send ({status: 'success', message: data});
                     mongoose.disconnect();
                 });
             } else
@@ -84,16 +84,20 @@ module.exports = (socket) => {
     // route to populate a single message.
     router.get ('/populate_single/:id', (req, res) => {
         if (req.session.user) {
-            mongoose.Promise = es6Promise;
-            mongoose.connect (config.host, config.db);
+            if (req.params.id) {
+                mongoose.Promise = es6Promise;
+                mongoose.connect (config.host, config.db);
 
-            Chat.find({id: req.params.id}).populate ("_user", "_id username machine").exec ((err, doc) => {
-                if (err) res.send ({status: 'error', message: err});
-                else if (doc) res.send ({status: 'success',data: doc});
-                else res.send ({status: 'error', message: 'No data'});
-
-                mongoose.disconnect ();
-            });
+                Chat.findOne({_id: req.params.id}).populate ("_user", "_id username machine").exec ((err, doc) => {
+                    if (err) res.send ({status: 'error', message: err});
+                    else if (doc) res.send ({status: 'success',data: doc});
+                    else res.send ({status: 'error', message: 'No data'});
+                    
+                    mongoose.disconnect ();
+                });
+            } else {
+                res.send ({status: 'error', message: 'require id'});
+            }
         } else res.send ({status: 'error', message: 'Login first'});
     });
 
