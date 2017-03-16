@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="chatModule">
 <head>
-    <title>Chats</title>
+    <title>Chat Room</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type='text/css' rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' />
@@ -46,7 +46,7 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">logged in as {{session.username}} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="http://localhost:3000/user/logout">Sign off</a></li>
+                    <li><a href="/user/logout">Sign off</a></li>
                     <li><a href="#">Delete account</a></li>
                     <li><a href="#">Vanish my data</a></li>
                     <li><a href="#">Some random option</a></li>
@@ -54,7 +54,6 @@
             </li>
         </ul>
         </div>
-        <!-- /.navbar-collapse -->
     </nav>
     <section class='container chat-container'>
         <section class='chat-header'>
@@ -75,92 +74,16 @@
                 <section ng-class='chat.cssMain'>
                     <img src='img/user.png' width=20 height=20/>
                     <section ng-class='chat.cssContent'>
-                        <a class='username' href>xyz</a><br/>
-                        This is the message content that contains a super large message
+                        <a class='username' href>{{chat._user.username}}</a><br/>
+                        {{chat.message}}
                     </section>
                 </section>
             </section>
-            <!--<section class='ind-chat-container'>
-                <section class='ind-chat'>
-                    <img src='img/user.png' width=20 height=20/>
-                    <section class='chat-content'>
-                        <a class='username' href>xyz</a><br/>
-                        This is the message content that contains a super large message
-                    </section>
-                </section>
-            </section>
-            <section class='self-container'>
-                <section class='self'>
-                    <img src='img/user.png' width=20 height=20/>
-                    <section class='chat-content-self'>
-                        <a class='username' href>gauravs</a><br/>
-                        <p>This is some random message by me</p>
-                    </section>
-                </section> 
-            </section>
-            <section class='self-container'>
-                <section class='self'>
-                    <img src='img/user.png' width=20 height=20/>
-                    <section class='chat-content-self'>
-                        <a class='username' href>gauravs</a><br/>
-                        <p>This is some random mesdfdfdfsage by me</p>
-                    </section>
-                </section> 
-            </section>
-            <section class='ind-chat-container'>
-                <section class='ind-chat'>
-                    <img src='img/user.png' width=20 height=20/>
-                    <section class='chat-content'>
-                        <a class='username' href>xyz</a><br/>
-                        This is the message content that contains a super large message
-                    </section>
-                </section>
-            </section>
-            <section class='ind-chat-container'>
-                <section class='ind-chat'>
-                    <img src='img/user.png' width=20 height=20/>
-                    <section class='chat-content'>
-                        <a class='username' href>xyz</a><br/>
-                        This is the message content that contains a super large message
-                    </section>
-                </section>
-            </section>
-            <section class='ind-chat-container'>
-                <section class='ind-chat'>
-                    <img src='img/user.png' width=20 height=20/>
-                    <section class='chat-content'>
-                        <a class='username' href>xyz</a><br/>
-                        This is the message content that contains a super large message
-                    </section>
-                </section>
-            </section>
-            <section class='self-container'>
-                <section class='self-container'>
-                    <section class='self'>
-                        <img src='img/user.png' width=20 height=20/>
-                        <section class='chat-content-self'>
-                            <a class='username' href>gauravs</a><br/>
-                            <p>This is some random mesdfdfdfsage by me</p>
-                        </section>
-                    </section> 
-                </section>
-            </section>
-            <section class='self-container'>
-                <section class='self'>
-                    <img src='img/user.png' width=20 height=20/>
-                    <section class='chat-content-self'>
-                        <a class='username' href>gauravs</a><br/>
-                        <p>This is some random mesdfdfdfsage by me</p>
-                    </section>
-                </section> 
-            </section> -->
         </section>
-
         <br/><br/><br/><br/><br/>
-
         <section class='chat-footer'>
-            <textarea placeholder='type in your message'></textarea>&nbsp;
-            <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+            <textarea id='input-message' placeholder='type in your message'></textarea>&nbsp;
+            <span class="glyphicon glyphicon-send" ng-click='sendMessage()' aria-hidden="true"></span>
         </section>
     </section>
 
@@ -171,8 +94,9 @@
             $scope.session = {};
 
             $scope.users = [];
+            $scope.chats = [];
 
-            var socket = io.connect ('http://localhost:3000');
+            var socket = io.connect ('/');
             socket.on ('server-connected', (data) => {
                 console.log ('server connected');
 
@@ -187,31 +111,48 @@
                 console.log ($scope.users);
             });
 
+            socket.on ('new-message', (data) => {
+                console.log ('new message');
+                $http({
+                    method: 'GET',
+                    url: '/chat/populate_single/'+ data._id
+                }).then (function successCallback (data) {
+                    var response = data.data;
+                    if (response.status == 'success') {
+                        $scope.chats.push (response.data);
+                    } else {
+                        console.log ('error '+ response.message);
+                    }
+                }, function errorCallback (data) {
+                    console.log ('error '+ JSON.stringify (data));
+                });;
+            });
+
+            // fetch the messages on load
             function getChatMessages () {
                 $http({
                     method: 'GET',
-                    url: 'http://localhost:3000/chat/populate'
+                    url: '/chat/populate'
                 }).then (function successCallback (data) {
                     var response = data.data;
                     console.log (response);
                     if (response.status == 'success') {
                         $('.no-chat-error').html ('');
 
-                        response.data.forEach ((item) => {
-                            if (item._user.username == $scope.session.username) {
-                                response.data.cssContainer = 'self-container';
-                                response.data.cssMain = 'self';
-                                response.data.cssContent = 'chat-content-self';
+                        console.log (response.data);
+                        response.data.forEach ((val) => {
+                            if (val._user.username == $scope.session.username) {
+                                val.cssContainer = 'self-container';
+                                val.cssMain = 'self';
+                                val.cssContent = 'chat-content-self';
                             } else {
-                                response.data.cssContainer = 'ind-chat-container';
-                                response.data.cssMain = 'ind-chat';
-                                response.data.cssContent = 'chat-content';
+                                val.cssContainer = 'ind-chat-container';
+                                val.cssMain = 'ind-chat';
+                                val.cssContent = 'chat-content';
                             }
+
+                            $scope.chats.push (val);
                         });
-
-                        $scope.chats = response.data;
-
-                        // set scope chats to resppnse.data
                     } else {
                         $('.no-chat-error').html ('No chats found');
                     }
@@ -220,22 +161,41 @@
                 });
             }
 
+            // init the session variable
             function initSession () {
                 $http({
                     method: 'GET',
-                    url: 'http://localhost:3000/user/getSession'
+                    url: '/user/getSession'
                 }).then (function successCallback (data) {
                     if (data.data.status == 'success') {
                         $scope.session = data.data.data;
                         socket.emit ('user-joined', $scope.session);
                     } else {
                         console.log (data.data.message);
-                        window.location = 'http://localhost:3000/login';
+                        window.location = '/login';
                     }
                 }, function errorCallback (data){ 
                     console.log (data);
-                    window.location = 'http://localhost:3000/login';
+                    window.location = '/login';
                 });    
+            }
+
+            $scope.sendMessage = () => {
+                var message = $('#input-message').val();
+                $http({
+                    method: 'POST',
+                    url: '/chat/message',
+                    data: {message: message}
+                }). then (function successCallback (data) {
+                    var response = data.data;
+                    if (response.status == 'success') {
+                        console.log ('success');
+                    } else {
+                        console.log ('error sending message');
+                    }
+                }, function errorCallback (data) {
+                    console.log ('error '+ JSON.stringify(data));
+                });
             }
         }]);
     </script>

@@ -23,6 +23,9 @@
         .error-message {
             color: brown;
         }
+        .success-message {
+            color: seagreen;
+        }
     </style>
 </head>
 
@@ -49,8 +52,10 @@
 
                 <input type='text' ng-model='username' class='form-control' placeholder="username" /><br/>
                 <input type='password' required="true" ng-model='password' class='form-control' placeholder="password" /> <br/>
-                <p class='text-center'><button ng-click='signupUser()' class='btn btn-sm btn-primary'>Sign Up</button></p>
+                <p class='text-center'><button ng-click='signupUser()' class='btn btn-sm btn-primary'>{{header}}</button></p>
+                <p class='text-center'>Already a member? <button class='btn btn-link' onclick='window.location = "/login"'>login here</button></p>
                 <p class='text-center error-message'></p>
+                <p class='text-center success-message'></p>
             </section>
             <section class='col-md-4'></section>
         </section>
@@ -62,21 +67,38 @@
                 $scope.username = "";
                 $scope.password = "";
 
+                var socket = io.connect ('/');
+                socket.on ('server-connected', (data) => {
+                    console.log ('server connected');
+                });
+
                 $scope.signupUser = () => {
                     if ($scope.username.trim() == '' || $scope.password.trim() == '')
                         $('.error-message').html ('required fields');
                     else {
                         $('.error-message').html ('');
-                        alert ($scope.username + '\t'+ $scope.password);
+                        //alert ($scope.username + '\t'+ $scope.password);
 
                         $http ({
                             method: 'POST',
-                            url: 'http://localhost:3000/user/signup',
+                            url: '/user/signup',
                             data: {username: $scope.username, password: $scope.password}
                         }). then (function successCallback (data) {
-                            
+                            var response = data.data;
+                            if (response.status == 'success') {
+                                $('.error-message').html ('');
+                                $('.success-message').html ('registered successfully.. redirecting to login page');
+                                setTimeout (2000, () => {
+                                    window.location = '/login';
+                                });
+                            } else {
+                                $('.success-message').html ('');
+                                $('.error-message').html ('some error occured: '+ response.message);
+                            }
                         }, function errorCallback (data) {
-                            
+                            $('.success-message').html ('');
+                            console.log (JSON.stringify(data));
+                            $('.error-message').html ('error occured: '+ JSON.stringify(data));
                         });
                     }
                 }

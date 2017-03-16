@@ -50,6 +50,7 @@
                 <input type='text' ng-model='username' class='form-control' placeholder="username" /><br/>
                 <input type='password' ng-model='password' ng-model='password' class='form-control' placeholder="password" /> <br/>
                 <p class='text-center'><button ng-click='loginAuth()' class='btn btn-sm btn-primary'>Login</button></p>
+                <p class='text-center'>Not a member? <button class='btn btn-link' onclick='window.location = "/signup"'>Register here</button></p>
                 <p class='text-center error-message'></p>
             </section>
             <section class='col-md-4'></section>
@@ -62,7 +63,7 @@
                 $scope.username = '';
                 $scope.password = '';
 
-                var socket = io.connect ('http://localhost:3000');
+                var socket = io.connect ('/');
                 socket.on ('server-connected', (data) => {
                     console.log ('server connected');
                 });
@@ -70,12 +71,12 @@
                 $scope.loginAuth = () => {
                     $http({
                         method: 'POST',
-                        url: 'http://localhost:3000/user/auth',
+                        url: '/user/auth',
                         data: {username: $scope.username, password: $scope.password}
                     }).then (function successCallback (data) {
                         if (data.data.status == 'success') {
                             alert ('authenticated');
-                            window.location = 'http://localhost:3000/chat';
+                            window.location = '/chat';
                         } else
                             $('.error-message').html (data.data.message);
                     }, function errorCallback (data) {
