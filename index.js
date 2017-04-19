@@ -57,6 +57,7 @@ io.on ('connection', (socket) => {
     });
 
     socket.on ('new-chat', (data) => {
+        console.log (data+ ' at index');
         connected.forEach ((id) => {
             io.to (id.sid).emit ('new-message', data);
         });

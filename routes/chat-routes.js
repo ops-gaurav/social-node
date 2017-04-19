@@ -57,9 +57,18 @@ module.exports = (socket) => {
                 });
 
                 message.save().then ((data) => {
-                    socket.emit ('new-message', data);
-                    res.send ({status: 'success', message: data});
-                    mongoose.disconnect();
+
+                    // send the populated dadta
+                    Chat.findOne ({_id: data._id}).populate ('_user', '_id username machine'). exec ((err, doc) => {
+                        if (err) res.send ({status: 'error', message: err});
+                        else if (doc) {
+                            res.send ({status: 'success', data: doc});
+                            socket.emit ('new-chat', doc);
+                        }
+                        else res.send ({status:'error', message: 'No data'});
+
+                        mongoose.disconnect ();
+                    });
                 });
             } else
                 res.send ({status:'error', message: 'cannot send empty message'});
@@ -67,6 +76,7 @@ module.exports = (socket) => {
             res.send ({status: 'error', message: 'login first'});
     });
 
+    // get all messages
     router.get ('/populate', (req, res) => {
         if (req.session.user) {
             mongoose.Promise = es6Promise;
@@ -94,6 +104,7 @@ module.exports = (socket) => {
                     else res.send ({status: 'error', message: 'No data'});
                     
                     mongoose.disconnect ();
+                    console.log ('disconnected from database for '+ req.session.username);
                 });
             } else {
                 res.send ({status: 'error', message: 'require id'});

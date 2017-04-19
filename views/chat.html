@@ -112,30 +112,40 @@
             });
 
             socket.on ('new-message', (data) => {
-                $http({
-                    method: 'GET',
-                    url: '/chat/populate_single/'+ data._id
-                }). then (function successCallback (data) {
-                    var response = data.data;
-                    if (response.status == 'success') {
-                        if (response.data._user.username == $scope.session.username) {
-                            response.data.cssContainer = 'self-container';
-                            response.data.cssMain = 'self';
-                            response.data.cssContent = 'chat-content-self';
-                        } else {
-                            response.data.cssContainer = 'ind-chat-container';
-                            response.data.cssMain = 'ind-chat';
-                            response.data.cssContent = 'chat-content';
-                        }
-                        $scope.chats.push (response.data);
-                    } else {
-                        console.log ('ERROR '+ response.message);
-                    }
-                }, function errorCallback (data) {
-                    console.log ('ERROR: '+ data.data);
-                });;
+                if (data._user.username == $scope.session.username) {
+                    data.cssContainer = 'self-container';
+                    data.cssMain = 'self';
+                    data.cssContent = 'chat-content-self';
+                } else {
+                    data.cssContainer = 'ind-chat-container';
+                    data.cssMain = 'ind-chat';
+                    data.cssContent = 'chat-content';
+                }
+                $scope.chats.push (data);
+                // $http({
+                //     method: 'GET',
+                //     url: '/chat/populate_single/'+ data._id
+                // }). then (function successCallback (data) {
+                //     var response = data.data;
+                //     if (response.status == 'success') {
+                //         if (response.data._user.username == $scope.session.username) {
+                //             response.data.cssContainer = 'self-container';
+                //             response.data.cssMain = 'self';
+                //             response.data.cssContent = 'chat-content-self';
+                //         } else {
+                //             response.data.cssContainer = 'ind-chat-container';
+                //             response.data.cssMain = 'ind-chat';
+                //             response.data.cssContent = 'chat-content';
+                //         }
+                //         $scope.chats.push (response.data);
+                //     } else {
+                //         console.log ('ERROR '+ response.message);
+                //     }
+                // }, function errorCallback (data) {
+                //     console.log ('ERROR: '+ data.data);
+                // });;
                 
-                $('.chats').scrollTop ($('.chats').scrollHeight);
+                // $('.chats').scrollTop ($('.chats').scrollHeight);
             });
 
             // fetch the messages on load
@@ -202,20 +212,6 @@
                     if (response.status == 'success') {
                         console.log (response);
                         socket.emit ('new-chat', response.message);
-                        // fetch the populated data
-                        // $http({
-                        //     method: 'GET',
-                        //     url: '/chat/populate_single/'+ response.message._id
-                        // }).then (function successCallback (data) {
-                        //     var response = data.data;
-                        //     if (response.status == 'success') {
-                        //         socket.emit ('new-chat', response.data);
-                        //     } else {
-                        //         console.log ('error '+ response.message);
-                        //     }
-                        // }, function errorCallback (data) {
-                        //     console.log ('error '+ JSON.stringify (data));
-                        // });
                     } else {
                         console.log ('error sending message');
                     }
